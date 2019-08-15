@@ -14,5 +14,21 @@ export default StyleSheet.create({
   },
   text: {
     color: Colors.white
+  },
+  playBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  playTxt: {
+    fontSize: 45,
+    fontFamily: 'dogbyte',
+    color: '#ecf0f1',
+    marginTop: 5,
+    textTransform: 'uppercase',
+  },
+  playIcon: {
+    height: 60,
+    width: 60,
+    marginRight: 15,
   }
 });
