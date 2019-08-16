@@ -15,7 +15,7 @@ export default StyleSheet.create({
   text: {
     color: Colors.white
   },
-  playBtn: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -31,10 +31,6 @@ export default StyleSheet.create({
     width: 60,
     marginRight: 15,
   },
-  hiscoreWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   hiscore: {
     fontSize: 28.5,
     fontFamily: 'dogbyte',
@@ -45,5 +41,32 @@ export default StyleSheet.create({
     height: 45,
     width: 45,
     marginRight: 12.5,
-  }
+  },
+  leaderboardIcon: {
+    height: 45,
+    width: 45,
+    marginRight: 12.5,
+  },
+  leaderboard: {
+    fontSize: 38,
+    fontFamily: 'dogbyte',
+    color: '#ecf0f1',
+    marginTop: 5,
+  },
+  bottomContainer: {
+    position: 'absolute',
+    left: 15,
+    right: 15,
+    bottom: 12.5,
+  },
+  copyrightText: {
+    fontSize: 16,
+    fontFamily: 'dogbyte',
+    marginBottom: 2.5,
+  },
+  soundIcon: {
+    height: 45,
+    width: 45,
+    marginRight: 12.5,
+  },
 });
