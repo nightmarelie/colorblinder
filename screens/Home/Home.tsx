@@ -24,6 +24,13 @@ export default class Home extends Component {
           />
           <Text style={styles.playTxt}>play!</Text>
         </TouchableOpacity>
+        <View style={styles.hiscoreWrap}>
+          <Image 
+            source={require("../../assets/icons/trophy.png")}
+            style={styles.trophyIcon}
+          />
+          <Text style={styles.hiscore}>Hi-score: 0</Text>
+        </View>
       </View>
     )
   }
