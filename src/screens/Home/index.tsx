@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Audio } from 'expo-av';
 
+import { retrieveData } from '../../utilities';
 import { Header } from "../../components";
 import styles from "./styles";
 
 export default class Home extends Component<{ navigation: any }, {}> {
   state = {
-    isSoundOn: true
+    isSoundOn: true,
+    bestPoints: 0,
   };
 
   private backgroundMusic;
@@ -21,6 +23,7 @@ export default class Home extends Component<{ navigation: any }, {}> {
       await this.buttonFX.loadAsync(require("../../../assets/sfx/button.wav"));
       await this.backgroundMusic.setIsLoopingAsync(true);
       await this.backgroundMusic.playAsync();
+      retrieveData('highScore').then(val => this.setState({ bestPoints: +val || 0 }));
       // Your sound is playing!
     } catch (error) {
       // An error occurred!
@@ -38,11 +41,19 @@ export default class Home extends Component<{ navigation: any }, {}> {
   };
 
   onToggleSound = () => {
-    this.setState({ isSoundOn: !this.state.isSoundOn });
+    const { isSoundOn } = this.state;
+    if (isSoundOn) {
+      this.backgroundMusic.stopAsync();
+    } else {
+      this.backgroundMusic.replayAsync();
+    }
+
+    this.setState({ isSoundOn: !isSoundOn });
   };
 
   render() {
-    const imageSource = this.state.isSoundOn
+    const { bestPoints, isSoundOn } = this.state;
+    const imageSource = isSoundOn
       ? require("../../../assets/icons/speaker-on.png")
       : require("../../../assets/icons/speaker-off.png");
 
@@ -64,7 +75,7 @@ export default class Home extends Component<{ navigation: any }, {}> {
             source={require("../../../assets/icons/trophy.png")}
             style={styles.trophyIcon}
           />
-          <Text style={styles.hiscore}>Hi-score: 0</Text>
+          <Text style={styles.hiscore}>Hi-score: {bestPoints}</Text>
         </View>
         <TouchableOpacity
           onPress={this.onLeaderboardPress}

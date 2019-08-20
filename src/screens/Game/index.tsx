@@ -4,7 +4,12 @@ import { Audio } from 'expo-av';
 
 import { Header } from '../../components';
 import styles from './styles';
-import { generateRGB, mutateRGB } from '../../utilities';
+import { 
+  generateRGB,
+  mutateRGB,
+  storeData,
+  retrieveData,
+} from '../../utilities';
 
 type State = {
   points: number;
@@ -18,6 +23,8 @@ type State = {
   diffTileIndex: number[],
   diffTileColor: string,
   gameState: GameState,
+  bestPoints: number;
+  bestTime: number;
 }
 
 enum GameState {
@@ -36,6 +43,8 @@ export default class Game extends Component<{ navigation: any }, State> {
     diffTileColor: undefined,
     gameState: GameState.INGAME,
     shakeAnimation: new Animated.Value(0),
+    bestPoints: 0,
+    bestTime: 0,
   };
 
   private interval;
@@ -67,6 +76,8 @@ export default class Game extends Component<{ navigation: any }, State> {
       await this.loseMusic.loadAsync(require("../../../assets/sfx/lose.wav"));
       await this.backgroundMusic.setIsLoopingAsync(true);
       await this.backgroundMusic.playAsync();
+      retrieveData('highScore').then(val => this.setState({ bestPoints: +val || 0 }));
+      retrieveData('bestTime').then(val => this.setState({ bestTime: +val || 0 }));
       // Your sound is playing!
     } catch (error) {
       // An error occurred!
@@ -74,9 +85,17 @@ export default class Game extends Component<{ navigation: any }, State> {
     this.generateNewRound();
     this.interval = setInterval(async () => {
       if (this.state.gameState === GameState.INGAME) {
+        if (this.state.timeLeft > this.state.bestTime) {
+          this.setState(state => ({ bestTime: state.timeLeft }));
+          storeData('bestTime', this.state.timeLeft);
+        }
         if (this.state.timeLeft <= 0) {
           this.loseMusic.replayAsync();
           this.backgroundMusic.stopAsync();
+          if (this.state.points > this.state.bestPoints) {
+            this.setState(state => ({ bestPoints: state.points }));
+            storeData('highScore', this.state.points);
+          }
           this.setState({ gameState: GameState.LOST });
         } else {
           this.setState({ timeLeft: this.state.timeLeft - 1 });
@@ -186,6 +205,8 @@ export default class Game extends Component<{ navigation: any }, State> {
       points,
       gameState,
       shakeAnimation,
+      bestPoints,
+      bestTime,
     } = this.state;
 
     const bottomIcon =
@@ -258,7 +279,7 @@ export default class Game extends Component<{ navigation: any }, State> {
               </Text>
               <View style={styles.bestContainer}>
                 <Image source={require('../../../assets/icons/trophy.png')} style={styles.bestIcon} />
-                <Text style={styles.bestLabel}>0</Text>
+                <Text style={styles.bestLabel}>{bestPoints}</Text>
               </View>
             </View>
             <View style={styles.part}>
@@ -275,7 +296,7 @@ export default class Game extends Component<{ navigation: any }, State> {
               </Text>
               <View style={styles.bestContainer}>
                 <Image source={require('../../../assets/icons/clock.png')} style={styles.bestIcon} />
-                <Text style={styles.bestLabel}>0</Text>
+                <Text style={styles.bestLabel}>{bestTime}</Text>
               </View>
             </View>
           </View>
