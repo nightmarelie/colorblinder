@@ -1,15 +1,34 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Audio } from 'expo-av';
+
 import { Header } from "../../components";
 import styles from "./styles";
 
-export default class Home extends Component {
+export default class Home extends Component<{ navigation: any }, {}> {
   state = {
     isSoundOn: true
   };
 
+  private backgroundMusic;
+
+  async componentWillMount() {
+    this.backgroundMusic = new Audio.Sound();
+    try {
+      await this.backgroundMusic.loadAsync(
+        require("../../../assets/music/Komiku_Mushrooms.mp3")
+      );
+      await this.backgroundMusic.setIsLoopingAsync(true);
+      await this.backgroundMusic.playAsync();
+      // Your sound is playing!
+    } catch (error) {
+      // An error occurred!
+    }
+  }
+
   onPlayPress = () => {
-    console.log("onPlayPress event handler");
+    this.backgroundMusic.stopAsync();
+    this.props.navigation.navigate('Game');
   };
 
   onLeaderboardPress = () => {
@@ -22,8 +41,8 @@ export default class Home extends Component {
 
   render() {
     const imageSource = this.state.isSoundOn
-      ? require("../../assets/icons/speaker-on.png")
-      : require("../../assets/icons/speaker-off.png");
+      ? require("../../../assets/icons/speaker-on.png")
+      : require("../../../assets/icons/speaker-off.png");
 
     return (
       <View style={styles.container}>
@@ -33,14 +52,14 @@ export default class Home extends Component {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
         >
           <Image
-            source={require("../../assets/icons/play_arrow.png")}
+            source={require("../../../assets/icons/play_arrow.png")}
             style={styles.playIcon}
           />
           <Text style={styles.play}>PLAY!</Text>
         </TouchableOpacity>
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
           <Image
-            source={require("../../assets/icons/trophy.png")}
+            source={require("../../../assets/icons/trophy.png")}
             style={styles.trophyIcon}
           />
           <Text style={styles.hiscore}>Hi-score: 0</Text>
@@ -50,7 +69,7 @@ export default class Home extends Component {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
         >
           <Image
-            source={require("../../assets/icons/leaderboard.png")}
+            source={require("../../../assets/icons/leaderboard.png")}
             style={styles.leaderboardIcon}
           />
           <Text style={styles.leaderboard}>Leaderboard</Text>

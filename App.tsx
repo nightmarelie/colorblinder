@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
-import Routes from './screens/Routes';
+import Routes from './src/screens/Routes';
 
 export default class App extends Component {
   state = {
