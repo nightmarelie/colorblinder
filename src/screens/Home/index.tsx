@@ -11,13 +11,14 @@ export default class Home extends Component<{ navigation: any }, {}> {
   };
 
   private backgroundMusic;
+  private buttonFX;
 
   async componentWillMount() {
     this.backgroundMusic = new Audio.Sound();
+    this.buttonFX = new Audio.Sound();
     try {
-      await this.backgroundMusic.loadAsync(
-        require("../../../assets/music/Komiku_Mushrooms.mp3")
-      );
+      await this.backgroundMusic.loadAsync(require("../../../assets/music/Komiku_Mushrooms.mp3"));
+      await this.buttonFX.loadAsync(require("../../../assets/sfx/button.wav"));
       await this.backgroundMusic.setIsLoopingAsync(true);
       await this.backgroundMusic.playAsync();
       // Your sound is playing!
@@ -27,6 +28,7 @@ export default class Home extends Component<{ navigation: any }, {}> {
   }
 
   onPlayPress = () => {
+    this.buttonFX.replayAsync();
     this.backgroundMusic.stopAsync();
     this.props.navigation.navigate('Game');
   };
