@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, SafeAreaView } from "react-native";
 import { Audio } from 'expo-av';
 
 import { retrieveData } from '../../utilities';
@@ -58,35 +58,37 @@ export default class Home extends Component<{ navigation: any }, {}> {
       : require("../../../assets/icons/speaker-off.png");
 
     return (
-      <View style={styles.container}>
-        <Header />
-        <TouchableOpacity
-          onPress={this.onPlayPress}
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
-        >
-          <Image
-            source={require("../../../assets/icons/play_arrow.png")}
-            style={styles.playIcon}
-          />
-          <Text style={styles.play}>PLAY!</Text>
-        </TouchableOpacity>
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
-          <Image
-            source={require("../../../assets/icons/trophy.png")}
-            style={styles.trophyIcon}
-          />
-          <Text style={styles.hiscore}>Hi-score: {bestPoints}</Text>
+      <SafeAreaView style={styles.container}>
+        <View style={{ flex: 1 }}>
+          <Header />
+          <TouchableOpacity
+            onPress={this.onPlayPress}
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
+          >
+            <Image
+              source={require("../../../assets/icons/play_arrow.png")}
+              style={styles.playIcon}
+            />
+            <Text style={styles.play}>PLAY!</Text>
+          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+            <Image
+              source={require("../../../assets/icons/trophy.png")}
+              style={styles.trophyIcon}
+            />
+            <Text style={styles.hiscore}>Hi-score: {bestPoints}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={this.onLeaderboardPress}
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
+          >
+            <Image
+              source={require("../../../assets/icons/leaderboard.png")}
+              style={styles.leaderboardIcon}
+            />
+            <Text style={styles.leaderboard}>Leaderboard</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={this.onLeaderboardPress}
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
-        >
-          <Image
-            source={require("../../../assets/icons/leaderboard.png")}
-            style={styles.leaderboardIcon}
-          />
-          <Text style={styles.leaderboard}>Leaderboard</Text>
-        </TouchableOpacity>
         <View style={styles.bottomContainer}>
           <View>
             <Text style={[styles.copyrightText, { color: "#E64C3C" }]}>
@@ -104,7 +106,7 @@ export default class Home extends Component<{ navigation: any }, {}> {
             <Image source={imageSource} style={styles.soundIcon} />
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

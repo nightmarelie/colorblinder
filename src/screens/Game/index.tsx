@@ -1,14 +1,16 @@
 import React, { Component, Fragment } from 'react';
-import { View, TouchableOpacity, Text, Image, Animated } from 'react-native';
+import { View, TouchableOpacity, Text, Image, Animated, SafeAreaView } from 'react-native';
 import { Audio } from 'expo-av';
 
-import { Header } from '../../components';
+import { Header, Grid, BottomBar } from '../../components';
 import styles from './styles';
 import { 
   generateRGB,
   mutateRGB,
   storeData,
   retrieveData,
+  shakeAnimation as shake,
+  GameState,
 } from '../../utilities';
 
 type State = {
@@ -25,12 +27,6 @@ type State = {
   gameState: GameState,
   bestPoints: number;
   bestTime: number;
-}
-
-enum GameState {
-  INGAME,
-  PAUSED,
-  LOST,
 }
 
 export default class Game extends Component<{ navigation: any }, State> {
@@ -126,29 +122,7 @@ export default class Game extends Component<{ navigation: any }, State> {
       this.btnTileWrong.replayAsync();
       // wrong tile
 
-      // refactor in the feature!
-      Animated.sequence([
-        Animated.timing(shakeAnimation, {
-          toValue: 50,
-          duration: 100,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: -50,
-          duration: 100,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: 50,
-          duration: 100,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: -50,
-          duration: 100,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: 0,
-          duration: 100,
-        })
-      ]).start();
+      shake(shakeAnimation);
       this.setState({ timeLeft: timeLeft - 2 });
     }
   }
@@ -207,6 +181,7 @@ export default class Game extends Component<{ navigation: any }, State> {
       shakeAnimation,
       bestPoints,
       bestTime,
+      timeLeft,
     } = this.state;
 
     const bottomIcon =
@@ -217,29 +192,21 @@ export default class Game extends Component<{ navigation: any }, State> {
         : require("../../../assets/icons/replay.png");
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
           <Header fontSize={50} />
         </View>
         <View style={styles.tilesSection}>
           <Animated.View style={[styles.tiles, { left: shakeAnimation }]}>
-            {gameState === GameState.INGAME ? Array(size).fill(0).map((_, columnIndex) => (
-              <View style={styles.column} key={columnIndex}>
-                {Array(size).fill(0).map((_, rowIndex) => (
-                  <TouchableOpacity
-                    key={`${rowIndex}.${columnIndex}`}
-                    style={{
-                      flex: 1,
-                      backgroundColor: rowIndex == diffTileIndex[0] && columnIndex == diffTileIndex[1]
-                        ? diffTileColor
-                        : `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
-                      margin: 2
-                    }}
-                    onPress={() => this.onTilePress(rowIndex, columnIndex)}
-                  />
-                ))}
-              </View>
-            )) : (
+            {gameState === GameState.INGAME ? (
+              <Grid
+                size={size}
+                diffTileIndex={diffTileIndex}
+                diffTileColor={diffTileColor}
+                rgb={rgb}
+                onPress={this.onTilePress}
+              />
+            ) : (
               <View style={styles.pausedContainer}>
                 {gameState === GameState.PAUSED ? (
                   <Fragment>
@@ -268,40 +235,17 @@ export default class Game extends Component<{ navigation: any }, State> {
             )}
           </Animated.View>
         </View>
-        <View style={styles.bottomSectionContainer}>
-          <View style={styles.bottomContainer}>
-            <View style={styles.part}>
-              <Text style={styles.counterCount}>
-                {points}
-              </Text>
-              <Text style={styles.counterLabel}>
-                points
-              </Text>
-              <View style={styles.bestContainer}>
-                <Image source={require('../../../assets/icons/trophy.png')} style={styles.bestIcon} />
-                <Text style={styles.bestLabel}>{bestPoints}</Text>
-              </View>
-            </View>
-            <View style={styles.part}>
-            <TouchableOpacity style={{ alignItems: 'center' }} onPress={this.onBottomBarPress}>
-              <Image source={bottomIcon} style={styles.bottomIcon} />
-            </TouchableOpacity>
-            </View>
-            <View style={styles.part}>
-              <Text style={styles.counterCount}>
-                {this.state.timeLeft}
-              </Text>
-              <Text style={styles.counterLabel}>
-                seconds left
-              </Text>
-              <View style={styles.bestContainer}>
-                <Image source={require('../../../assets/icons/clock.png')} style={styles.bestIcon} />
-                <Text style={styles.bestLabel}>{bestTime}</Text>
-              </View>
-            </View>
-          </View>
+        <View style={{ flex: 2 }}>
+          <BottomBar
+            points={points}
+            bestPoints={bestPoints}
+            timeLeft={timeLeft}
+            bestTime={bestTime}
+            onBottomBarPress={this.onBottomBarPress}
+            gameState={gameState}
+          />
         </View>
-      </View>
+      </SafeAreaView>
     )
   }
 }

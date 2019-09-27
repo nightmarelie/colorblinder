@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { isIphoneX, scale } from '../../utilities'
 
 export default StyleSheet.create({
   container: {
@@ -8,52 +9,50 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   play: {
-    fontSize: 45,
+    fontSize: scale(45),
     fontFamily: "dogbyte",
     color: "#ecf0f1",
     marginTop: 5
   },
   playIcon: {
-    height: 60,
-    width: 60,
+    height: scale(60),
+    width: scale(60),
     marginRight: 15
   },
   leaderboard: {
-    fontSize: 40,
+    fontSize: scale(40),
     fontFamily: "dogbyte",
     color: "#ecf0f1",
     marginTop: 5
   },
   leaderboardIcon: {
-    height: 50,
-    width: 50,
+    height: scale(50),
+    width: scale(50),
     marginRight: 15
   },
   hiscore: {
-    fontSize: 28.5,
+    fontSize: scale(28.5),
     fontFamily: "dogbyte",
     color: "#ecf0f1",
     marginTop: 5
   },
   trophyIcon: {
-    height: 45,
-    width: 45,
+    height: scale(45),
+    width: scale(45),
     marginRight: 12.5
   },
   bottomContainer: {
-    position: "absolute",
-    left: 15,
-    right: 15,
-    bottom: 12.5,
+    marginBottom: isIphoneX() ? 0 : "5%",
+    marginHorizontal: "5%",
     flexDirection: "row"
   },
   copyrightText: {
-    fontSize: 16,
+    fontSize: scale(16),
     fontFamily: "dogbyte",
     marginBottom: 2.5
   },
   soundIcon: {
-    height: 35,
-    width: 35
+    height: scale(35),
+    width: scale(35)
   }
 });
